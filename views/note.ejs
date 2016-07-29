@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ToDo Notes</title>
+    <script src="https://fb.me/react-15.2.1.min.js"></script>
+    <script src="https://fb.me/react-dom-15.2.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+    <script   src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"   integrity="sha256-xNjb53/rY+WmG+4L6tTl9m6PpqknWZvRt0rO1SRnJzw="   crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.0/jquery-ui.min.css">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src = "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
+
+</head>
+<body>
+    <div id = "container"></div>
+    <script type="text/babel">
+        
+        var Note = React.createClass({
+
+            getInitialState : function(){
+
+                return {editing : false}
+
+            },
+
+            componentWillMount : function(){
+                this.style = {
+                    right : this.random(0,window.innerWidth-150) + 'px',
+                    top :  this.random(0,window.innerHeight-150) + 'px',
+                    transform : 'rotate(' + this.random(-15,15) + 'deg)' 
+                }
+            },
+
+            random : function(min,max){
+
+                return (min + Math.ceil(Math.random()*max));
+            },
+
+            edit : function(){
+                this.setState({editing:true});
+            },
+
+            save : function(){
+
+                this.props.onChange(this.refs.newT.value,this.props.index);
+                this.setState({editing:false});
+            },
+
+            remove : function(){
+                this.props.onRemove(this.props.index);
+            },
+
+            showNote : function(){
+
+                return (
+
+                    <div className = "note" style = {this.style}>
+                        <span>
+                            <button onClick = {this.edit} className = "btn btn-primary btn-sm glyphicon glyphicon-pencil"></button>
+                            <button onClick = {this.remove} className = "btn btn-danger btn-sm glyphicon glyphicon-trash"></button>
+                        </span>
+                        <p>{this.props.children}</p>
+                    </div>
+                );
+
+            },
+
+            editNote : function(){
+
+                return(
+
+                    <div className="note" style = {this.style}>
+                        <textarea ref= "newT" defaultValue="Write here" className="form-control"></textarea>
+                        <button onClick={this.save} className = "btn btn-success btn-sm glyphicon glyphicon-floppy-disk"></button>
+
+                    </div>
+                );
+            },
+
+            render : function(){
+
+                if(this.state.editing)
+                    return this.editNote();
+                else return this.showNote();
+            }
+        });
+
+        var Board = React.createClass({
+
+            getInitialState : function(){
+
+                return {
+                    notes : []
+                };
+            },
+
+            nextId : function(){
+
+                this.uniqueId = this.uniqueId || 0;
+                return this.uniqueId++;
+            },
+
+            add : function(){
+
+                var a = this.state.notes;
+                var text = "New Note";
+                a.push({id:this.nextId(),note:text});
+                this.setState({notes:a});
+            },
+
+            update : function(newTe,i){
+
+                var a = this.state.notes;
+                a[i].note = newTe;
+                this.setState({notes:a});
+            },
+
+            remove : function(i){
+
+                var a = this.state.notes;
+                a.splice(i,1);
+                this.setState({notes:a});
+
+            },
+
+            each : function(n,i){
+
+                return (
+                    <Note key={n.id} index={i} onChange={this.update} onRemove={this.remove}>{n.note}</Note>
+                );
+            },
+
+            render : function(){
+                return (
+                    <div className = "board">
+
+                    <button className = "btn btn-sm btn-success" onClick = {this.add}>New Note</button>
+                    {this.state.notes.map(this.each)}</div>
+                );
+            }
+        });
+
+        ReactDOM.render(<Board></Board>,document.getElementById('container'));
+
+    </script>
+</body>
+</html>

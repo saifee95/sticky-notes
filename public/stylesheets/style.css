@@ -1,0 +1,31 @@
+body{
+	font-family: "Comic Sans MS";
+	height: 100vh;
+}
+
+.board{
+	background-color: white;
+	font-family: "Comic Sans MS";
+	height: 100vh;
+}
+
+.note{
+
+	width: 150px;
+	height: 150px;
+	position: absolute;
+	background-color: yellow;
+	color:black;
+	font-family: "Comic Sans MS";
+	font-size: 18px;
+}
+
+textarea{
+	background: transparent;
+	color: black;
+	font-family: "Comic Sans MS";
+}
+
+p{
+	text-align: center;
+}	
